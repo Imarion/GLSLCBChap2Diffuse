@@ -2,23 +2,25 @@ QT += gui core
 
 CONFIG += c++11
 
-TARGET = Triangle
+TARGET = Diffuse
 CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    Triangle.cpp \
+    Diffuse.cpp \
     vertex.cpp \
     vertexcol.cpp \
-    vertextex.cpp
+    vertextex.cpp \
+    torus.cpp
 
 HEADERS += \
-    Triangle.h \
+    Diffuse.h \
     vertex.h \
     vertexcol.h \
-    vertextex.h
+    vertextex.h \
+    torus.h
 
 OTHER_FILES += \
     fshader.txt \

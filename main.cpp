@@ -1,4 +1,4 @@
-#include "Triangle.h"
+#include "Diffuse.h"
 
 #include <QGuiApplication>
 

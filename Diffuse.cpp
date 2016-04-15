@@ -1,4 +1,4 @@
-#include "Triangle.h"
+#include "Diffuse.h"
 
 #include <QtGlobal>
 
@@ -90,6 +90,43 @@ void MyWindow::initialize()
 
 void MyWindow::CreateVertexBuffer()
 {
+     mTorus = new Torus(0.7f, 0.3f, 30, 30);
+
+     // Create and populate the buffer objects
+     unsigned int handle[4];
+     glGenBuffers(4, handle);
+
+     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
+     glBufferData(GL_ARRAY_BUFFER, (3 * mTorus->getnVerts()) * sizeof(float), mTorus->getv(), GL_STATIC_DRAW);
+
+     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
+     glBufferData(GL_ARRAY_BUFFER, (3 * mTorus->getnVerts()) * sizeof(float), mTorus->getn(), GL_STATIC_DRAW);
+
+     glBindBuffer(GL_ARRAY_BUFFER, handle[2]);
+     glBufferData(GL_ARRAY_BUFFER, (2 * mTorus->getnVerts()) * sizeof(float), mTorus->gettex(), GL_STATIC_DRAW);
+
+     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[3]);
+     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * mTorus->getnFaces() * sizeof(unsigned int), mTorus->getel(), GL_STATIC_DRAW);
+
+     // Create the VAO
+     glEnableVertexAttribArray(0);  // Vertex position
+     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
+     glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+
+     glEnableVertexAttribArray(1);  // Vertex normal
+     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
+     glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+
+     glBindBuffer(GL_ARRAY_BUFFER, handle[2]);
+     glEnableVertexAttribArray(2);  // Texture coords
+     glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+
+     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[3]);
+
+     mFuncs->glBindVertexArray(0);
+
+
+/*
     float positionData[] = {
         -0.8f, -0.8f, 0.0f,
          0.8f, -0.8f, 0.0f,
@@ -113,6 +150,7 @@ void MyWindow::CreateVertexBuffer()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mColorBufferHandle);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 9 * sizeof(float), colorData, GL_STATIC_DRAW);
+*/
 }
 
 void MyWindow::resizeEvent(QResizeEvent *)
@@ -147,11 +185,12 @@ void MyWindow::render()
 
     QMatrix4x4 RotationMatrix;
 
-    RotationMatrix.rotate(EvolvingVal, QVector3D(0.0f, 0.0f, 0.1f));
+    RotationMatrix.rotate(EvolvingVal * 3.0f, QVector3D(0.1f, 0.0f, 0.1f));
 
+    mFuncs->glBindVertexArray(mVAO);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-
+/*
     mFuncs->glBindVertexBuffer(0, mPositionBufferHandle, 0, sizeof(GLfloat) * 3);
     mFuncs->glBindVertexBuffer(1, mColorBufferHandle,    0, sizeof(GLfloat) * 3);
 
@@ -160,11 +199,12 @@ void MyWindow::render()
 
     mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribBinding(1, 1);
-
+*/
     mProgram->bind();
     {
         glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6 * mTorus->getnFaces(), GL_UNSIGNED_INT, ((GLubyte *)NULL + (0)));
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);

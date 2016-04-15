@@ -12,6 +12,8 @@
 
 #include <QOpenGLShaderProgram>
 
+#include "torus.h"
+
 #define ToRadian(x) ((x) * M_PI / 180.0f)
 #define ToDegree(x) ((x) * 180.0f / M_PI)
 
@@ -54,6 +56,8 @@ private:
     GLuint mVAO, mVBO, mIBO;
     GLuint mPositionBufferHandle, mColorBufferHandle;
     GLuint mRotationMatrixLocation;
+
+    Torus  *mTorus;
 
     //debug
     void printMatrix(const QMatrix4x4& mat);
