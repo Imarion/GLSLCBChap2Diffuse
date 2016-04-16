@@ -110,51 +110,16 @@ void MyWindow::CreateVertexBuffer()
     mFuncs->glBindVertexBuffer(0, handle[0], 0, sizeof(GLfloat) * 3);
     mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribBinding(0, 0);
-/*
-     glEnableVertexAttribArray(0);  // Vertex position
-     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
-     glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
-*/
+
     // Vertex normals
     mFuncs->glBindVertexBuffer(1, handle[1], 0, sizeof(GLfloat) * 3);
     mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
     mFuncs->glVertexAttribBinding(1, 1);
-/*
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-    glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
-*/
-    //
+
+    // Indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[2]);
 
     mFuncs->glBindVertexArray(0);
-
-
-/*
-    float positionData[] = {
-        -0.8f, -0.8f, 0.0f,
-         0.8f, -0.8f, 0.0f,
-         0.0f,  0.8f, 0.0f
-    };
-
-    float colorData[]= {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f,
-    };
-
-    GLuint vboHandles[2];
-
-    glGenBuffers(2, vboHandles);
-    mPositionBufferHandle = vboHandles[0];
-    mColorBufferHandle    = vboHandles[1];
-
-    glBindBuffer(GL_ARRAY_BUFFER, mPositionBufferHandle);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), positionData, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mColorBufferHandle);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 9 * sizeof(float), colorData, GL_STATIC_DRAW);
-*/
 }
 
 void MyWindow::resizeEvent(QResizeEvent *)
@@ -286,7 +251,6 @@ void MyWindow::keyPressEvent(QKeyEvent *keyEvent)
             break;
     }
 }
-
 
 void MyWindow::printMatrix(const QMatrix4x4& mat)
 {
