@@ -90,40 +90,44 @@ void MyWindow::initialize()
 
 void MyWindow::CreateVertexBuffer()
 {
-     mTorus = new Torus(0.7f, 0.3f, 30, 30);
+    mTorus = new Torus(0.7f, 0.3f, 30, 30);
 
-     // Create and populate the buffer objects
-     unsigned int handle[4];
-     glGenBuffers(4, handle);
+    // Create and populate the buffer objects
+    unsigned int handle[3];
+    glGenBuffers(3, handle);
 
-     glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
-     glBufferData(GL_ARRAY_BUFFER, (3 * mTorus->getnVerts()) * sizeof(float), mTorus->getv(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
+    glBufferData(GL_ARRAY_BUFFER, (3 * mTorus->getnVerts()) * sizeof(float), mTorus->getv(), GL_STATIC_DRAW);
 
-     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-     glBufferData(GL_ARRAY_BUFFER, (3 * mTorus->getnVerts()) * sizeof(float), mTorus->getn(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
+    glBufferData(GL_ARRAY_BUFFER, (3 * mTorus->getnVerts()) * sizeof(float), mTorus->getn(), GL_STATIC_DRAW);
 
-     glBindBuffer(GL_ARRAY_BUFFER, handle[2]);
-     glBufferData(GL_ARRAY_BUFFER, (2 * mTorus->getnVerts()) * sizeof(float), mTorus->gettex(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[2]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * mTorus->getnFaces() * sizeof(unsigned int), mTorus->getel(), GL_STATIC_DRAW);
 
-     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[3]);
-     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * mTorus->getnFaces() * sizeof(unsigned int), mTorus->getel(), GL_STATIC_DRAW);
-
-     // Create the VAO
+    // Setup the VAO
+    // Vertex positions
+    mFuncs->glBindVertexBuffer(0, handle[0], 0, sizeof(GLfloat) * 3);
+    mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+    mFuncs->glVertexAttribBinding(0, 0);
+/*
      glEnableVertexAttribArray(0);  // Vertex position
      glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
      glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+*/
+    // Vertex normals
+    mFuncs->glBindVertexBuffer(1, handle[1], 0, sizeof(GLfloat) * 3);
+    mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+    mFuncs->glVertexAttribBinding(1, 1);
+/*
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
+    glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
+*/
+    //
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[2]);
 
-     glEnableVertexAttribArray(1);  // Vertex normal
-     glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-     glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
-
-     glBindBuffer(GL_ARRAY_BUFFER, handle[2]);
-     glEnableVertexAttribArray(2);  // Texture coords
-     glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, ((GLubyte *)NULL + (0)) );
-
-     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[3]);
-
-     mFuncs->glBindVertexArray(0);
+    mFuncs->glBindVertexArray(0);
 
 
 /*
@@ -190,16 +194,7 @@ void MyWindow::render()
     mFuncs->glBindVertexArray(mVAO);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-/*
-    mFuncs->glBindVertexBuffer(0, mPositionBufferHandle, 0, sizeof(GLfloat) * 3);
-    mFuncs->glBindVertexBuffer(1, mColorBufferHandle,    0, sizeof(GLfloat) * 3);
 
-    mFuncs->glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
-    mFuncs->glVertexAttribBinding(0, 0);
-
-    mFuncs->glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
-    mFuncs->glVertexAttribBinding(1, 1);
-*/
     mProgram->bind();
     {
         glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
