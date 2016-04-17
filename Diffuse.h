@@ -36,6 +36,7 @@ private:
 
     void initShaders();
     void CreateVertexBuffer();    
+    void initMatrices();
 
     void PrepareTexture(GLenum TextureTarget, const QString& FileName, GLuint& TexObject, bool flip);
 
@@ -58,6 +59,7 @@ private:
     GLuint mRotationMatrixLocation;
 
     Torus  *mTorus;
+    QMatrix4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
     //debug
     void printMatrix(const QMatrix4x4& mat);

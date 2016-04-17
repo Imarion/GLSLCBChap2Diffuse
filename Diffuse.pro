@@ -25,6 +25,12 @@ HEADERS += \
 OTHER_FILES += \
     fshader.txt \
     vshader.txt \
+    vshader_diffuse.txt \
+    fshader_diffuse.txt
 
 RESOURCES += \
     shaders.qrc
+
+DISTFILES += \
+    vshader_diffuse.txt \
+    fshader_diffuse.txt

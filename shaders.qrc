@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>fshader.txt</file>
         <file>vshader.txt</file>
+        <file>fshader_diffuse.txt</file>
+        <file>vshader_diffuse.txt</file>
     </qresource>
 </RCC>

@@ -79,6 +79,7 @@ void MyWindow::initialize()
 
     CreateVertexBuffer();
     initShaders();
+    initMatrices();
 
     mRotationMatrixLocation = mProgram->uniformLocation("RotationMatrix");
 
@@ -122,9 +123,20 @@ void MyWindow::CreateVertexBuffer()
     mFuncs->glBindVertexArray(0);
 }
 
+void MyWindow::initMatrices()
+{
+    ModelMatrix.rotate(-35.0f, QVector3D(1.0f,0.0f,0.0f));
+    ModelMatrix.rotate( 35.0f, QVector3D(0.0f,1.0f,0.0f));
+
+    ViewMatrix.lookAt(QVector3D(0.0f,0.0f,2.0f), QVector3D(0.0f,0.0f,0.0f), QVector3D(0.0f,1.0f,0.0f));
+}
+
 void MyWindow::resizeEvent(QResizeEvent *)
 {
     mUpdateSize = true;
+
+    ProjectionMatrix.setToIdentity();
+    ProjectionMatrix.perspective(70.0f, (float)this->width()/(float)this->height(), 0.3f, 100.0f);
 }
 
 void MyWindow::render()
@@ -152,9 +164,8 @@ void MyWindow::render()
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    QMatrix4x4 RotationMatrix;
-
-    RotationMatrix.rotate(EvolvingVal * 3.0f, QVector3D(0.1f, 0.0f, 0.1f));
+    //QMatrix4x4 RotationMatrix;
+    //RotationMatrix.rotate(EvolvingVal * 3.0f, QVector3D(0.1f, 0.0f, 0.1f));
 
     mFuncs->glBindVertexArray(mVAO);
     glEnableVertexAttribArray(0);
@@ -162,8 +173,16 @@ void MyWindow::render()
 
     mProgram->bind();
     {
-        glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());        
+        mProgram->setUniformValue("Kd", QVector3D(0.9f, 0.5f, 0.3f));
+        mProgram->setUniformValue("Ld", QVector3D(1.0f, 1.0f, 1.0f));
+        mProgram->setUniformValue("LightPosition", ViewMatrix * QVector4D(5.0f,5.0f,2.0f,1.0f));
+
+        QMatrix4x4 mv = ViewMatrix * ModelMatrix;        
+        mProgram->setUniformValue("ModelViewMatrix", mv);
+        mProgram->setUniformValue("NormalMatrix", mv.normalMatrix());
+        mProgram->setUniformValue("MVP", ProjectionMatrix * mv);
+
         glDrawElements(GL_TRIANGLES, 6 * mTorus->getnFaces(), GL_UNSIGNED_INT, ((GLubyte *)NULL + (0)));
 
         glDisableVertexAttribArray(0);
@@ -183,13 +202,13 @@ void MyWindow::initShaders()
 
     //mTreeProgram
     // Shader 1
-    shaderFile.setFileName(":/vshader.txt");
+    shaderFile.setFileName(":/vshader_diffuse.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
     qDebug() << "vertex tree compile: " << vShader.compileSourceCode(shaderSource);
 
-    shaderFile.setFileName(":/fshader.txt");
+    shaderFile.setFileName(":/fshader_diffuse.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
