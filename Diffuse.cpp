@@ -173,10 +173,22 @@ void MyWindow::render()
 
     mProgram->bind();
     {
-        //glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());        
+        //glUniformMatrix4fv(mRotationMatrixLocation, 1, GL_FALSE, RotationMatrix.constData());
+        /* this code is for "diffuse"
         mProgram->setUniformValue("Kd", QVector3D(0.9f, 0.5f, 0.3f));
         mProgram->setUniformValue("Ld", QVector3D(1.0f, 1.0f, 1.0f));
         mProgram->setUniformValue("LightPosition", ViewMatrix * QVector4D(5.0f,5.0f,2.0f,1.0f));
+        */
+        QVector4D worldLight = QVector4D(5.0f,5.0f,2.0f,1.0f);
+
+        mProgram->setUniformValue("Material.Kd", 0.9f, 0.5f, 0.3f);
+        mProgram->setUniformValue("Light.Ld", 1.0f, 1.0f, 1.0f);
+        mProgram->setUniformValue("Light.Position", ViewMatrix * worldLight );
+        mProgram->setUniformValue("Material.Ka", 0.9f, 0.5f, 0.3f);
+        mProgram->setUniformValue("Light.La", 0.4f, 0.4f, 0.4f);
+        mProgram->setUniformValue("Material.Ks", 0.8f, 0.8f, 0.8f);
+        mProgram->setUniformValue("Light.Ls", 1.0f, 1.0f, 1.0f);
+        mProgram->setUniformValue("Material.Shininess", 100.0f);
 
         QMatrix4x4 mv = ViewMatrix * ModelMatrix;        
         mProgram->setUniformValue("ModelViewMatrix", mv);
@@ -202,13 +214,13 @@ void MyWindow::initShaders()
 
     //mTreeProgram
     // Shader 1
-    shaderFile.setFileName(":/vshader_diffuse.txt");
+    shaderFile.setFileName(":/vshader_ads.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();
     qDebug() << "vertex tree compile: " << vShader.compileSourceCode(shaderSource);
 
-    shaderFile.setFileName(":/fshader_diffuse.txt");
+    shaderFile.setFileName(":/fshader_ads.txt");
     shaderFile.open(QIODevice::ReadOnly);
     shaderSource = shaderFile.readAll();
     shaderFile.close();

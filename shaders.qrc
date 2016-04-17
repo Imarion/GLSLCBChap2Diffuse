@@ -4,5 +4,7 @@
         <file>vshader.txt</file>
         <file>fshader_diffuse.txt</file>
         <file>vshader_diffuse.txt</file>
+        <file>fshader_ads.txt</file>
+        <file>vshader_ads.txt</file>
     </qresource>
 </RCC>
