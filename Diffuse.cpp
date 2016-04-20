@@ -165,7 +165,8 @@ void MyWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //QMatrix4x4 RotationMatrix;
-    //RotationMatrix.rotate(EvolvingVal * 3.0f, QVector3D(0.1f, 0.0f, 0.1f));
+    //RotationMatrix.rotate(EvolvingVal, QVector3D(0.1f, 0.0f, 0.1f));
+    ModelMatrix.rotate(0.3f, QVector3D(0.1f, 0.0f, 0.1f));
 
     mFuncs->glBindVertexArray(mVAO);
     glEnableVertexAttribArray(0);
